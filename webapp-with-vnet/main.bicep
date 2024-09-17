@@ -55,6 +55,13 @@ var config = {
   defaultTags: defaultTags
 }
 
+module network './networking.bicep' = {
+  name: 'networking.bicep'
+  params: {
+    config: config
+  }
+}
+
 // module appInsights './appInsights.bicep' = {
 //   name: 'appInsights.bicep'
 //   scope: resourceGroup('pm-demo-dev-ause-rg01')
@@ -63,49 +70,42 @@ var config = {
 //   }
 // }
 
-module network './networking.bicep' = {
-  name: 'networking.bicep'
-  params: {
-    config: config
-  }
-}
+// module keyVault './keyVault.bicep' = {
+//   name: 'keyVault.bicep'
+//   params: {
+//     config: config
+//     vnetId: network.outputs.vnetId
+//     privateSubNetId: network.outputs.privateSubNetId
+//   }
+// }
 
-module keyVault './keyVault.bicep' = {
-  name: 'keyVault.bicep'
-  params: {
-    config: config
-    vnetId: network.outputs.vnetId
-    privateSubNetId: network.outputs.privateSubNetId
-  }
-}
+// module db './database.bicep' = {
+//   name: 'database.bicep'
+//   params: {
+//     config: config
+//     vnetId: network.outputs.vnetId
+//     privateSubNetId: network.outputs.privateSubNetId
+//   }
+// }
 
-module db './database.bicep' = {
-  name: 'database.bicep'
-  params: {
-    config: config
-    vnetId: network.outputs.vnetId
-    privateSubNetId: network.outputs.privateSubNetId
-  }
-}
+// module appService './appService.bicep' = {
+//   name: 'appService.bicep'
+//   params: {
+//     config: config
+//     webSubNetId: network.outputs.webSubNetId
+//     databaseConnectionString: db.outputs.connectionString
+//     exampleSecretUri: keyVault.outputs.exampleSecretUri
+//     //appInsightsConnectionString: appinsights.outputs.appInsightsConnectionString
+//   }
+// }
 
-module appService './appService.bicep' = {
-  name: 'appService.bicep'
-  params: {
-    config: config
-    webSubNetId: network.outputs.webSubNetId
-    databaseConnectionString: db.outputs.connectionString
-    exampleSecretUri: keyVault.outputs.exampleSecretUri
-    //appInsightsConnectionString: appinsights.outputs.appInsightsConnectionString
-  }
-}
-
-module ra './roleAssignments.bicep' = {
-  name: 'roleAssignments.bicep'
-  params: {
-    config: config
-    appServicePrincipalId: appService.outputs.principalId
-  }
-}
+// module ra './roleAssignments.bicep' = {
+//   name: 'roleAssignments.bicep'
+//   params: {
+//     config: config
+//     appServicePrincipalId: appService.outputs.principalId
+//   }
+// }
 
 // module hub './hub.bicep' = {
 //   name: 'hub.bicep'
