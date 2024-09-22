@@ -2,15 +2,15 @@
 
 Create an Azure Container Instance container group with two containers:
 
-- [n8n](https://n8n.io/): n8n is a workflow automation tool that allows you to automate tasks across different services and applications.
+- [anything llm](https://anythingllm.com/): A full-stack application that enables you to turn any document, resource, or piece of content into context that any LLM can use as references during chatting.
 - [caddy](https://caddyserver.com/): Caddy is a powerful, enterprise-ready, open-source web server with automatic HTTPS written in Go. It is used here to provide `https` to the n8n instance since ACI does not provide SSL.
 
-### Deployment Instructions
+## Deployment Instructions
 
 - Copy the `.env.template` file in this folder and rename to `.env` (this will be ignored by `git`).
 - Populate with the necessary values.
 
-  ```
+  ```env
   TENANT_ID=
   SUBSCRIPTION_ID=
   RESOURCE_GROUP=
@@ -22,8 +22,6 @@ Create an Azure Container Instance container group with two containers:
   ```
 
 - Run the PowerShell script [deploy.json](./deploy.ps1)
-
-
 
 ### Parameters
 
@@ -39,8 +37,8 @@ Create an Azure Container Instance container group with two containers:
 | File                    | Description                                                                                                                                             |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `main.bicep`            | The main Bicep file that orchestrates the deployment of the entire solution.                                                                            |
-| `storage-account.bicep` | Creates a storage account and file shares to persist data for the n8n and Caddy containers.                                                             |
-| `aci.bicep`             | Defines the Azure Container Instance container group with two containers: n8n and Caddy.                                                                |
+| `storage-account.bicep` | Creates a storage account and file shares to persist data for the containers.                                                             |
+| `aci.bicep`             | Defines the Azure Container Instance container group with two containers.                                                                |
 | `automation.bicep`      | Creates an automation account to automatically stop the container group each day at 9.30pm if the `createAutomationAccount` parameter is set to `true`. |
 
 ## Bicep Resource Diagram

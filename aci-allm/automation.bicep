@@ -36,7 +36,7 @@ resource stopSchedule 'Microsoft.Automation/automationAccounts/schedules@2023-11
   properties: {
     frequency: 'Day'
     interval: 1
-    startTime: '${dateTimeAdd(baseDate, 'P0D', 'yyyy-MM-dd')}T21:30:00${timeZoneOffset}'
+    startTime: '${dateTimeAdd(baseDate, 'P1D', 'yyyy-MM-dd')}T21:30:00${timeZoneOffset}'
     timeZone: timeZone
     description: 'Stop the container group every day to save money.'
   }
@@ -52,10 +52,11 @@ resource stopRunbook 'Microsoft.Automation/automationAccounts/runbooks@2023-11-0
     logProgress: false
     description: 'Stop the container group every night to save money'
     publishContentLink: {
-      uri: 'https://gist.githubusercontent.com/pm7y/ab5c855752b53550ac4689dba793f33a/raw/f92b33efe9d5c882a570f4695816457dbf3634c3/StopN8NContainerGroup.ps1'
+      uri: 'https://gist.githubusercontent.com/pm7y/8b9b9f1d2011402646484e622da9c591/raw/6f9f41ddd4f9a4f06c509506e0d871744767fb17/StopALLMContainerGroup.ps1'
       contentHash: {
         algorithm: 'SHA256'
-        value: 'f720f24c45596e9279734bf8e1cbb4d46bdd0ec52f77ebb485b2ede043a745c3'
+        // https://codebeautify.org/sha256-hash-generator
+        value: 'e8c987a139674494171c96cb9c526ac21d964eae05aa99838af8bb0553956d4e'
       }
       version: '1.0.0'
     }
