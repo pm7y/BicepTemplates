@@ -22,11 +22,10 @@ $createAutomationAccount = [System.Environment]::GetEnvironmentVariable("CREATE_
 
 
 # az config set core.login_experience_v2=off # Disable the new login experience
-
 # az login --tenant $tenantId
-# az account set --subscription $subscriptionId
 
-# az group create --name $resourceGroup --location $location
+az account set --subscription $subscriptionId
+az group create --name $resourceGroup --location $location
 
 az deployment group create `
     --resource-group $resourceGroup `

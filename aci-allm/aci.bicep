@@ -66,6 +66,11 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2024-05-01-
               memoryInGB: 3
             }
           }
+          command: [
+            'bash'
+            '-c'
+            'touch /app/server/storage/.env && ln -sf /app/server/storage/.env /app/server/.env && /usr/local/bin/docker-entrypoint.sh'
+          ]
           ports: [
             {
               port: allmPort
@@ -89,12 +94,22 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2024-05-01-
               name: 'STORAGE_DIR'
               value: '/app/server/storage'
             }
+            {
+              name: 'DISABLE_TELEMETRY'
+              value: 'true'
+            }
           ]
         }
       }
     ]
     osType: 'Linux'
     restartPolicy: 'Never'
+    // diagnostics: {
+    //   logAnalytics: {
+    //     workspaceId: 'd2b1d703-3f8a-407f-8ab3-cb484c29c329'
+    //     workspaceKey: 'B6hukPxbbzlK...hMw=='
+    //   }
+    // }
     ipAddress: {
       type: 'Public'
       dnsNameLabel: dnsLabel

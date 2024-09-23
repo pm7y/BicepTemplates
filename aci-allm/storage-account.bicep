@@ -75,16 +75,5 @@ resource allmStorageFileShare 'Microsoft.Storage/storageAccounts/fileServices/sh
   }
 }
 
-resource allmEnvFileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-05-01' = {
-  parent: fileServices
-  name: '${containerGroupName}-allmenv'
-  properties: {
-    shareQuota: 10
-    accessTier: 'TransactionOptimized'
-    enabledProtocols: 'SMB'
-  }
-}
-
 output caddyDataFileShareName string = caddyDataFileShare.name
 output allmStorageFileShare string = allmStorageFileShare.name
-output allmEnvFileShare string = allmEnvFileShare.name

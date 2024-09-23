@@ -35,7 +35,6 @@ module allmAci './aci.bicep' = {
     containerGroupName: containerGroupName
     timeZone: timeZone
     allmStorageFileShareName: storageAccount.outputs.allmStorageFileShare
-    // allmEnvFileShareName: storageAccount.outputs.allmEnvFileShare
     caddyDataFileShareName: storageAccount.outputs.caddyDataFileShareName
     overridePublicUrl: overridePublicUrl
   }
@@ -49,4 +48,7 @@ module automation './automation.bicep' = if (createAutomationAccount) {
     containerGroupName: containerGroupName
     timeZone: timeZone
   }
+  dependsOn: [
+    allmAci
+  ]
 }
