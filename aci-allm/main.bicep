@@ -10,11 +10,16 @@ param storageAccountName string
 @description('Set this if you are using a custom domain, e.g. via CloudFlare or similar.')
 param overridePublicUrl string = ''
 
-@description('Set this to true to create an automation account to automatically stop the container group each day at 9.30pm.')
-param createAutomationAccount bool = false
-
 @description('Set this to the time zone you want to use.')
 param timeZone string = 'Australia/Brisbane'
+
+@secure()
+@description('The password for the admin user. This value is used to authenticate to the AnythingLLM admin panel.')
+param secureAuthToken string
+
+@secure()
+@description('Random string for seeding. Please generate random string at least 12 chars long.')
+param secureJwtSecret string
 
 @description('Create a storage account and file shares to persist data for the AnythingLLM and Caddy containers.')
 module storageAccount './storage-account.bicep' = {
@@ -37,18 +42,7 @@ module allmAci './aci.bicep' = {
     allmStorageFileShareName: storageAccount.outputs.allmStorageFileShare
     caddyDataFileShareName: storageAccount.outputs.caddyDataFileShareName
     overridePublicUrl: overridePublicUrl
+    secureAuthToken: secureAuthToken
+    secureJwtSecret: secureJwtSecret
   }
-}
-
-@description('Create an automation to automatically stop the container group each day at 9.30pm.')
-module automation './automation.bicep' = if (createAutomationAccount) {
-  name: 'allmAutomation'
-  params: {
-    location: location
-    containerGroupName: containerGroupName
-    timeZone: timeZone
-  }
-  dependsOn: [
-    allmAci
-  ]
 }

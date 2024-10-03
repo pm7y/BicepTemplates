@@ -3,7 +3,7 @@
 Create an Azure Container Instance container group with two containers:
 
 - [anything llm](https://anythingllm.com/): A full-stack application that enables you to turn any document, resource, or piece of content into context that any LLM can use as references during chatting.
-- [caddy](https://caddyserver.com/): Caddy is a powerful, enterprise-ready, open-source web server with automatic HTTPS written in Go. It is used here to provide `https` to the n8n instance since ACI does not provide SSL.
+- [caddy](https://caddyserver.com/): Caddy is a powerful, enterprise-ready, open-source web server with automatic HTTPS written in Go. It is used here to provide `https` to the n8n instance since ACI does not provide SSL. Please refer to my blog article about this in more detail [here](https://m7y.me/post/2024-09-23-azure-container-instance-https/).
 
 ## Deployment Instructions
 
@@ -15,22 +15,18 @@ Create an Azure Container Instance container group with two containers:
   SUBSCRIPTION_ID=
   RESOURCE_GROUP=
   LOCATION=
-  CONTAINER_GROUP_NAME=
-  STORAGE_ACCOUNT_NAME=
-  OVERRIDE_PUBLIC_URL=
-  CREATE_AUTOMATION_ACCOUNT=false
   ```
 
+- Copy the `parameters.template.json` file and rename to `parameters.json` and update for your needs:
+
+  - `timeZone`: Set this to the time zone you want to use. e.g. `Australia/Brisbane`
+  - `containerGroupName`: The name of the container group to create.
+  - `storageAccountName`: The name of the storage account to create.
+  - `overridePublicUrl`: If you want to use a custom domain name set that to you url (e.g. `allm.example.com`). Then in your DNS provider you will need to create a CNAME record that points `allm.example.com` to the url of the container group which will be in the form `<container-group-name>.<location>.azurecontainer.io`
+  - `secureAuthToken`: The password for the admin user. This value is used to authenticate to the AnythingLLM admin panel.
+  - `secureJwtSecret`: Random string for seeding. Generate random string at least 12 chars long.
+
 - Run the PowerShell script [deploy.json](./deploy.ps1)
-
-### Parameters
-
-| Parameter                 | Description                                                                                                                             | Example                  |
-| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| `containerGroupName`      | The name of the Azure Container Instance container group.                                                                               | `myContainerGroup`       |
-| `storageAccountName`      | The name of the storage account to be created.                                                                                          | `mystorageaccount`       |
-| `overridePublicUrl`       | (Optional) Custom domain name for the public URL. Only use this if you have a custom DNS setup to point at the ACI e.g. via Cloudflare. | `mycustomdomainname.com` |
-| `createAutomationAccount` | (Optional) Boolean flag to create an automation account to automatically stop the container group each day at 9.30pm.                   | `true` or `false`        |
 
 ## Bicep Files
 
@@ -39,8 +35,7 @@ Create an Azure Container Instance container group with two containers:
 | `main.bicep`            | The main Bicep file that orchestrates the deployment of the entire solution.                                                                            |
 | `storage-account.bicep` | Creates a storage account and file shares to persist data for the containers.                                                             |
 | `aci.bicep`             | Defines the Azure Container Instance container group with two containers.                                                                |
-| `automation.bicep`      | Creates an automation account to automatically stop the container group each day at 9.30pm if the `createAutomationAccount` parameter is set to `true`. |
 
 ## Bicep Resource Diagram
 
-![Bicep Resource Diagram](/.docs/images/aci.png)
+![Bicep Resource Diagram](/.docs/images/aci_allm.png)

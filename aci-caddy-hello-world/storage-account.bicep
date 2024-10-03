@@ -16,7 +16,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
     isSftpEnabled: false
     isNfsV3Enabled: false
     minimumTlsVersion: 'TLS1_2'
-    allowBlobPublicAccess: true
+    allowBlobPublicAccess: false
     allowSharedKeyAccess: true
     largeFileSharesState: 'Enabled'
     isHnsEnabled: true
