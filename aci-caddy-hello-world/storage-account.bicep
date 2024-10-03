@@ -59,21 +59,10 @@ resource caddyDataFileShare 'Microsoft.Storage/storageAccounts/fileServices/shar
   parent: fileServices
   name: '${containerGroupName}-caddydata'
   properties: {
-    shareQuota: 10
-    accessTier: 'TransactionOptimized'
-    enabledProtocols: 'SMB'
-  }
-}
-
-resource n8nFileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-05-01' = {
-  parent: fileServices
-  name: '${containerGroupName}-n8ndata'
-  properties: {
-    shareQuota: 10
+    shareQuota: 1
     accessTier: 'TransactionOptimized'
     enabledProtocols: 'SMB'
   }
 }
 
 output caddyDataFileShareName string = caddyDataFileShare.name
-output n8nFileShareName string = n8nFileShare.name

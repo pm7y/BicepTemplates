@@ -1,19 +1,9 @@
 param location string
 param containerGroupName string
 param storageAccountName string
-param timeZone string
 param caddyDataFileShareName string
-param allmStorageFileShareName string
-param overridePublicUrl string = ''
-@secure()
-param secureAuthToken string
-@secure()
-param secureJwtSecret string
 
-var publicUrl = empty(overridePublicUrl)
-  ? toLower('${containerGroupName}.${location}.azurecontainer.io')
-  : overridePublicUrl
-var allmPort = 3001
+var publicUrl = toLower('${containerGroupName}.${location}.azurecontainer.io')
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing = {
   name: storageAccountName
@@ -36,7 +26,7 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2024-05-01-
             '--from'
             '${publicUrl}'
             '--to'
-            'localhost:${allmPort}'
+            'localhost:3001'
           ]
           resources: {
             requests: {
@@ -64,56 +54,26 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2024-05-01-
         }
       }
       {
-        name: '${containerGroupName}-allm'
+        name: '${containerGroupName}-hello-world'
         properties: {
-          // https://hub.docker.com/r/mintplexlabs/anythingllm
-          image: 'mintplexlabs/anythingllm:latest'
+          // https://github.com/Azure-Samples/aci-helloworld
+          image: 'mcr.microsoft.com/azuredocs/aci-helloworld:latest'
           resources: {
             requests: {
               cpu: 1
-              memoryInGB: 3
+              memoryInGB: 1
             }
           }
-          command: [
-            'bash'
-            '-c'
-            // The AnythingLLM .env file is one level up from the storage directory so we create a symlink to it.
-            'touch /app/server/storage/.env && ln -sf /app/server/storage/.env /app/server/.env && /usr/local/bin/docker-entrypoint.sh'
+          environmentVariables: [
+            {
+              name: 'PORT'
+              value: '3001'
+            }
           ]
           ports: [
             {
-              port: allmPort
+              port: 3001
               protocol: 'TCP'
-            }
-          ]
-          volumeMounts: [
-            {
-              name: allmStorageFileShareName
-              mountPath: '/app/server/storage'
-              readOnly: false
-            }
-          ]
-          environmentVariables: [
-            // https://github.com/Mintplex-Labs/anything-llm/blob/master/server/.env.example
-            {
-              name: 'TZ'
-              value: timeZone
-            }
-            {
-              name: 'STORAGE_DIR'
-              value: '/app/server/storage'
-            }
-            {
-              name: 'DISABLE_TELEMETRY'
-              value: 'true'
-            }
-            {
-              name: 'AUTH_TOKEN'
-              value: secureAuthToken
-            }
-            {
-              name: 'JWT_SECRET'
-              value: secureJwtSecret
             }
           ]
         }
@@ -140,15 +100,6 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2024-05-01-
         name: caddyDataFileShareName
         azureFile: {
           shareName: caddyDataFileShareName
-          storageAccountName: storageAccount.name
-          storageAccountKey: storageAccount.listKeys().keys[0].value
-          readOnly: false
-        }
-      }
-      {
-        name: allmStorageFileShareName
-        azureFile: {
-          shareName: allmStorageFileShareName
           storageAccountName: storageAccount.name
           storageAccountKey: storageAccount.listKeys().keys[0].value
           readOnly: false
